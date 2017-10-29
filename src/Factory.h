@@ -15,7 +15,14 @@ private:
     int cyborgs;
     std::vector<Troop> myTroops;
     std::vector<Troop> opTroops;
+public:
+    int getProduction() const;
 
+    int getCyborgs() const;
+
+    const std::vector<Troop> &getMyTroops() const;
+
+    const std::vector<Troop> &getOpTroops() const;
 };
 
 
