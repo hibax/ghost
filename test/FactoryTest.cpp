@@ -4,7 +4,7 @@
 
 TEST(Factory, simpleTest) {
 
-    Factory myFactory(0, OWNER::ME, 3, 0);
+    Factory myFactory(0, OWNER::ME, 0, 3);
 
     int expectedProduction(3);
 

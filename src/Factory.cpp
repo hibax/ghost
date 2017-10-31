@@ -1,8 +1,7 @@
 #include "Factory.h"
 
-Factory::Factory(int id, OWNER owner, int production, int cyborgs) : Entity(id, owner){
-    this->production = production;
-    this->cyborgs = cyborgs;
+Factory::Factory(int id, OWNER owner, int cyborgs, int production) :
+        Entity(id, owner), cyborgs(cyborgs), production(production){
 }
 
 int Factory::getProduction() const {
@@ -19,4 +18,20 @@ const std::vector<Troop> &Factory::getMyTroops() const {
 
 const std::vector<Troop> &Factory::getOpTroops() const {
     return opTroops;
+}
+
+void Factory::setMyTroops(const std::vector<Troop> &myTroops) {
+    Factory::myTroops = myTroops;
+}
+
+void Factory::setOpTroops(const std::vector<Troop> &opTroops) {
+    Factory::opTroops = opTroops;
+}
+
+void Factory::addTroop(OWNER owner, Troop troop) {
+    if (OWNER::ME == owner) {
+        myTroops.push_back(troop);
+    } else {
+        opTroops.push_back(troop);
+    }
 }

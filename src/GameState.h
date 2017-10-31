@@ -8,13 +8,17 @@
 class GameState {
 
 public:
-    GameState(int factoryCount, int linkCount);
+    GameState(int round, std::vector<Factory> &factories);
 
 private:
-    const int factoryCount;
-    const int linkCount;
     int round;
-    std::vector<Factory> factories;
+public:
+    int getRound() const;
+
+    const std::vector<Factory> &getFactories() const;
+
+private:
+    const std::vector<Factory> factories;
 
 };
 

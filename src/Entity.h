@@ -3,7 +3,7 @@
 #define GHOSTINTHECELL_ENTITY_H
 
 
-enum OWNER {ME, OPPONENT, NEUTRAL};
+#include "Globals.h"
 
 class Entity {
 public:
@@ -12,6 +12,12 @@ public:
 
 private:
     int id;
+public:
+    int getId() const;
+
+    OWNER getOwner() const;
+
+private:
     OWNER owner;
 };
 

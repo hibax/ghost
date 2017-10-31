@@ -10,4 +10,7 @@ namespace  globals {
 }
 
 
+enum OWNER {ME, OPPONENT, NEUTRAL};
+extern OWNER argToOwner(int arg);
+
 #endif //GHOSTINTHECELL_GLOBALS_H

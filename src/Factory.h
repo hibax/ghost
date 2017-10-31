@@ -16,6 +16,12 @@ private:
     std::vector<Troop> myTroops;
     std::vector<Troop> opTroops;
 public:
+    void setMyTroops(const std::vector<Troop> &myTroops);
+
+    void setOpTroops(const std::vector<Troop> &opTroops);
+
+    void addTroop(OWNER owner, Troop troop);
+
     int getProduction() const;
 
     int getCyborgs() const;
