@@ -10,12 +10,12 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/src
 )
 set(SOURCE_FILES
-        src/Factory.cpp
-        src/Factory.h
-        src/Troop.cpp
-        src/Troop.h
-        src/Entity.cpp
-        src/Entity.h)
+        src/Factory.cpp src/Factory.h
+        src/Troop.cpp src/Troop.h
+        src/Entity.cpp src/Entity.h
+        src/Parser.cpp src/Parser.h
+        src/GameState.cpp src/GameState.h
+        src/Globals.cpp src/Globals.h)
 
 add_library(
         ghostinthecell
@@ -24,7 +24,7 @@ add_library(
 add_executable(
         unit_tests
         src/main.cpp
-        test/FactoryTest.cpp)
+        test/FactoryTest.cpp test/ParserTest.cpp)
 
 target_link_libraries(
         unit_tests
