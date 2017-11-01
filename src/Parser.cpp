@@ -1,6 +1,8 @@
 
 #include <iostream>
+#include <sstream>
 #include "Parser.h"
+#include "Writer.h"
 
 void Parser::initGame() {
     int factoryCount; // the number of factories
@@ -20,6 +22,10 @@ void Parser::initGame() {
 
         globals::factoryDirectDistances[factory1][factory2] = distance;
         globals::factoryDirectDistances[factory2][factory1] = distance;
+
+        std::stringstream ss;
+        ss << "[Distance] " << factory1 << " " << factory2 << " = " << distance;
+        Writer::debug(ss.str());
 
     }
 }

@@ -1,3 +1,4 @@
+#include <sstream>
 #include "Factory.h"
 
 Factory::Factory(int id, OWNER owner, int cyborgs, int production) :
@@ -34,4 +35,12 @@ void Factory::addTroop(OWNER owner, Troop troop) {
     } else {
         opTroops.push_back(troop);
     }
+}
+
+std::string Factory::toString() {
+    std::stringstream ss;
+    ss << "[Factory]" << " id " << id
+       << " owner " << owner << " cyborgs " << cyborgs
+       << " production " << production;
+    return ss.str();
 }

@@ -4,14 +4,17 @@
 
 
 #include "Factory.h"
+#include "Action.h"
 
 class GameState {
 
 public:
     GameState(int round, std::vector<Factory> &factories);
+    std::vector<Action> computeActions() const;
+    Action generateActionAndComputeScore(const Factory &sourceFactory, const Factory &destinationFactory) const;
 
 private:
-    int round;
+    const int round;
 public:
     int getRound() const;
 

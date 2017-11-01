@@ -1,8 +1,34 @@
-#include "gtest/gtest.h"
+#include <iostream>
+#include "Parser.h"
+#include "Utils.h"
+#include "Writer.h"
 
 
-int main(int argc, char** argv) {
+/**
+ * Auto-generated code below aims at helping you parse
+ * the standard input according to the problem statement.
+ **/
+int main()
+{
+    int round = 0;
+    Parser::initGame();
 
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    // game loop
+    while (1) {
+        GameState gameState = Parser::initRound(round);
+
+        std::vector<Action> actions = gameState.computeActions();
+
+        Utils::sortActions(actions);
+
+        for (Action action : actions) {
+            Writer::debug(action.toString());
+        }
+
+        std::string output = Writer::actionsOutput(actions);
+
+        std::cout << output << std::endl;
+
+        ++round;
+    }
 }
