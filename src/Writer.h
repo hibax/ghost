@@ -1,7 +1,4 @@
-
-#ifndef GHOSTINTHECELL_WRITER_H
-#define GHOSTINTHECELL_WRITER_H
-
+#pragma once
 
 #include <vector>
 #include "Action.h"
@@ -15,7 +12,3 @@ public:
 private:
     Writer() = default;
 };
-
-
-
-#endif //GHOSTINTHECELL_WRITER_H

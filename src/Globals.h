@@ -1,7 +1,4 @@
-
-#ifndef GHOSTINTHECELL_GLOBALS_H
-#define GHOSTINTHECELL_GLOBALS_H
-
+#pragma once
 
 namespace  globals {
     extern int factoryCount;
@@ -12,5 +9,3 @@ namespace  globals {
 
 enum OWNER {ME, OPPONENT, NEUTRAL};
 extern OWNER argToOwner(int arg);
-
-#endif //GHOSTINTHECELL_GLOBALS_H

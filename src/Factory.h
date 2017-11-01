@@ -1,5 +1,4 @@
-#ifndef GHOSTINTHECELL_FACTORY_H
-#define GHOSTINTHECELL_FACTORY_H
+#pragma once
 
 #include <vector>
 #include "Entity.h"
@@ -26,6 +25,3 @@ private:
     std::vector<Troop> myTroops;
     std::vector<Troop> opTroops;
 };
-
-
-#endif //GHOSTINTHECELL_FACTORY_H

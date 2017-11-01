@@ -1,7 +1,4 @@
-
-#ifndef GHOSTINTHECELL_ENTITY_H
-#define GHOSTINTHECELL_ENTITY_H
-
+#pragma once
 
 #include <string>
 #include "Globals.h"
@@ -22,5 +19,3 @@ protected:
     OWNER owner;
 };
 
-
-#endif //GHOSTINTHECELL_ENTITY_H

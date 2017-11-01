@@ -1,7 +1,4 @@
-
-#ifndef GHOSTINTHECELL_GAMESTATE_H
-#define GHOSTINTHECELL_GAMESTATE_H
-
+#pragma once
 
 #include "Factory.h"
 #include "Action.h"
@@ -24,6 +21,3 @@ private:
     const std::vector<Factory> factories;
 
 };
-
-
-#endif //GHOSTINTHECELL_GAMESTATE_H

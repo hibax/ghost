@@ -1,6 +1,4 @@
-
-#ifndef GHOSTINTHECELL_ACTION_H
-#define GHOSTINTHECELL_ACTION_H
+#pragma once
 
 #include <string>
 
@@ -34,6 +32,3 @@ private:
     std::string message;
 
 };
-
-
-#endif //GHOSTINTHECELL_ACTION_H

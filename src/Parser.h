@@ -1,7 +1,4 @@
-
-#ifndef GHOSTINTHECELL_PARSER_H
-#define GHOSTINTHECELL_PARSER_H
-
+#pragma once
 
 #include "GameState.h"
 
@@ -17,6 +14,3 @@ private:
     static void fillFactories(std::vector<Factory> &factories, const std::string &entityType, int arg1, int arg4, int arg5,
                               int &entityId, int &arg2, int &arg3);
 };
-
-
-#endif //GHOSTINTHECELL_PARSER_H

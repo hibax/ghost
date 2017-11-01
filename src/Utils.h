@@ -1,7 +1,4 @@
-
-#ifndef GHOSTINTHECELL_UTILS_H
-#define GHOSTINTHECELL_UTILS_H
-
+#pragma once
 
 #include "Factory.h"
 #include "Action.h"
@@ -14,6 +11,3 @@ public:
 private:
     Utils() = default;
 };
-
-
-#endif //GHOSTINTHECELL_UTILS_H

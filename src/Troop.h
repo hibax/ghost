@@ -1,7 +1,4 @@
-
-#ifndef GHOSTINTHECELL_TROOP_H
-#define GHOSTINTHECELL_TROOP_H
-
+#pragma once
 
 #include "Entity.h"
 
@@ -24,6 +21,3 @@ private:
     int cyborgs;
     int turnsToArrive;
 };
-
-
-#endif //GHOSTINTHECELL_TROOP_H
