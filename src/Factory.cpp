@@ -2,6 +2,7 @@
 #include <cmath>
 #include "Factory.h"
 #include "Writer.h"
+#include "Evaluation.h"
 
 Factory::Factory(int id, OWNER owner, int cyborgs, int production) :
         Entity(id, owner), cyborgs(cyborgs), production(production){
@@ -117,14 +118,20 @@ std::vector<Action> Factory::computePossibleActions(const std::vector<Factory> &
 
     std::vector<Action> possibleActions;
 
-    for (const Factory &destinationFactory : factories) {
+    // Count not needed troops for the next 5 turns. (5 is arbitrary)
+    int availableTroops = countAvailableTroops(5);
 
-        // Generate action with score
-        const Action action = generateActionAndComputeScore(destinationFactory);
+    if (availableTroops > 0) {
 
-        // Avoid bad moves
-        if (action.getScore() >= 0 && action.isValid()) {
-            possibleActions.emplace_back(action);
+        for (const Factory &destinationFactory : factories) {
+
+            // Generate action with score
+            const Action action = generateActionAndComputeScore(destinationFactory, availableTroops);
+
+            // Avoid bad moves
+            if (action.getScore() >= 0 && action.isValid()) {
+                possibleActions.emplace_back(action);
+            }
         }
     }
 
@@ -136,13 +143,24 @@ std::vector<Action> Factory::computePossibleActions(const std::vector<Factory> &
  * Need rework
  * TODO : implement pow
  */
-Action Factory::generateActionAndComputeScore(const Factory &destinationFactory) const {
+Action Factory::generateActionAndComputeScore(const Factory &destinationFactory, int availableTroops) const {
 
+    int turnsToGetToDestination = globals::factoryDirectDistances[id][destinationFactory.getId()] + 1;
+
+    int neededTroops = (-1) * destinationFactory.computeBattle(turnsToGetToDestination);
+
+    float score = Evaluation::computeScore(destinationFactory, turnsToGetToDestination, neededTroops);
+
+    int troopsToSend = Evaluation::computeTroopsToSend(neededTroops, availableTroops, ACTION_TYPE::MOVE);
+
+    return Action(score, ACTION_TYPE::MOVE, id, destinationFactory.getId(), troopsToSend);
+}
+
+// count how many troops are available (= not needed for defense) for the next X turns (taking into account the production)
+int Factory::countAvailableTroops(int turns) const {
     int availableTroopsForAttack = cyborgs;
 
-    int neededTroopsForDefense = 0;
-
-    for (int i = 1; i < 6; ++i) {
+    for (int i = 1; i <= turns; ++i) {
         int tmpAvailableTroopsForAttack = computeBattle(i);
 
         if (tmpAvailableTroopsForAttack < availableTroopsForAttack) {
@@ -150,48 +168,7 @@ Action Factory::generateActionAndComputeScore(const Factory &destinationFactory)
         }
     }
 
-    //Writer::debug("[Factory " + std::to_string(id) + "]  Available troops for attack : " + std::to_string(availableTroopsForAttack));
+    Writer::debug("[Factory " + std::to_string(id) + "]  Available troops for attack : " + std::to_string(availableTroopsForAttack));
 
-    if (availableTroopsForAttack <= 0) {
-        return Action(0, ACTION_TYPE::MOVE, id, destinationFactory.getId(), 0);
-    }
-
-    int turnsToGetToDestination = globals::factoryDirectDistances[id][destinationFactory.getId()] + 1;
-
-    int neededTroopsForAttack = 0;
-    if (destinationFactory.getOwner() == OPPONENT) {
-        neededTroopsForAttack = (-1) * destinationFactory.computeBattle(turnsToGetToDestination);
-    }
-    else {
-        neededTroopsForAttack = (-1) * destinationFactory.computeBattle(turnsToGetToDestination);
-    }
-
-
-    float score = 0.000001 + destinationFactory.getProduction();
-    score /= std::pow(turnsToGetToDestination, 2);
-
-    if (neededTroopsForAttack > 0) {
-        score /= neededTroopsForAttack;
-    }
-    else {
-        neededTroopsForAttack = 0;
-        score = 0;
-    }
-
-    if (destinationFactory.getOwner() == OWNER::NEUTRAL) {
-        score *= 3;
-    }
-    else if (destinationFactory.getOwner() == OWNER::OPPONENT) {
-        score *= 2;
-    }
-
-    int troopsToSend;
-    if (neededTroopsForAttack > availableTroopsForAttack) {
-        troopsToSend = availableTroopsForAttack;
-    }
-    else {
-        troopsToSend = neededTroopsForAttack;
-    }
-
-    return Action(score, ACTION_TYPE::MOVE, id, destinationFactory.getId(), troopsToSend);
+    return availableTroopsForAttack;
 }

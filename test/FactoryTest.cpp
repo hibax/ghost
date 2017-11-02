@@ -195,7 +195,6 @@ TEST(Factory, underAttackDontSendTroops) {
 
 
     std::vector<Action> actualActions = myFactory.computePossibleActions(factories);
-    Utils::sortActions(actualActions);
 
-    EXPECT_EQ(0, actualActions.at(0).getCyborgCount());
+    EXPECT_EQ(0, actualActions.size());
 }

@@ -29,5 +29,6 @@ private:
     std::vector<Troop> myTroops;
     std::vector<Troop> opTroops;
     int fightCoef(OWNER factoryOwner, OWNER troopOwner) const;
-    Action generateActionAndComputeScore(const Factory &destinationFactory) const;
+    Action generateActionAndComputeScore(const Factory &destinationFactory, int availableTroops) const;
+    int countAvailableTroops(int turns) const;
 };
