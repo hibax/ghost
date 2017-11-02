@@ -88,6 +88,6 @@ void Parser::fillFactories(std::vector<Factory> &factories, const std::string &e
     else if (entityType == "TROOP") {
 
         auto targetFactoryId = (size_t)arg3;
-        factories.at(targetFactoryId).addTroop(argToOwner(arg1), Troop(entityId, argToOwner(arg1), arg2, arg3, arg4, arg5));
+        factories.at(targetFactoryId).addTroop(Troop(entityId, argToOwner(arg1), arg2, arg3, arg4, arg5));
     }
 }

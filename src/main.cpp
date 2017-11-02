@@ -17,15 +17,7 @@ int main()
     while (1) {
         GameState gameState = Parser::initRound(round);
 
-        std::vector<Action> actions = gameState.computeActions();
-
-        Utils::sortActions(actions);
-
-        for (Action action : actions) {
-            Writer::debug(action.toString());
-        }
-
-        std::string output = Writer::actionsOutput(actions);
+        std::string output = gameState.computeActions();
 
         std::cout << output << std::endl;
 

@@ -7,8 +7,7 @@ class GameState {
 
 public:
     GameState(int round, std::vector<Factory> &factories);
-    std::vector<Action> computeActions() const;
-    Action generateActionAndComputeScore(const Factory &sourceFactory, const Factory &destinationFactory) const;
+    std::string computeActions() const;
 
 private:
     const int round;
