@@ -8,23 +8,26 @@ enum ACTION_TYPE {
 
 class Action {
 public:
-    Action(float score, ACTION_TYPE actionType, int from, int to, int cyborgCount, std::string message);
-    Action(float score, ACTION_TYPE actionType, int from, int to, int cyborgCount);
+    Action(double score, ACTION_TYPE actionType, int from, int to, int cyborgCount, std::string message);
+    Action(double score, ACTION_TYPE actionType, int from, int to, int cyborgCount);
 
     ACTION_TYPE getActionType() const;
-    float getScore() const;
+    double getScore() const;
     int getSourceId() const;
     int getDestinationId() const;
     int getCyborgCount() const;
     const std::string &getMessage() const;
     bool isValid() const;
-    std::string toString();
+    std::string toString() const;
+    std::string getActionTypeAsString() const;
 
     bool operator > (const Action &action) const;
     bool operator == (const Action &other) const;
 
+    void setCyborgCount(int cyborgCount);
+
 private:
-    float score;
+    double score;
     ACTION_TYPE actionType;
     int sourceId;
     int destinationId;

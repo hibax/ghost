@@ -1,4 +1,5 @@
 #include <Parser.h>
+#include <Globals.h>
 #include "gtest/gtest.h"
 
 
@@ -29,6 +30,7 @@ TEST(Parser, initRountTest) {
     entities.emplace_back(3, "FACTORY", -1, 5, 2, 0, 0);
     entities.emplace_back(4, "TROOP", 1, 0, 1, 4, 2);
     entities.emplace_back(5, "TROOP", -1, 2, 1, 8, 4);
+    entities.emplace_back(6, "BOMB", -1, 3, 1, -1, 0);
 
     GameState gameState = Parser::initRoundIDE(2, entities);
     auto &actualFactories = gameState.getFactories();

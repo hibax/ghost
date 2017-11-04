@@ -3,9 +3,13 @@
 #include "Factory.h"
 #include "Writer.h"
 #include "Evaluation.h"
+#include "Globals.h"
 
 Factory::Factory(int id, OWNER owner, int cyborgs, int production) :
-        Entity(id, owner), cyborgs(cyborgs), production(production){
+        Factory(id, owner, cyborgs, production, 0){
+}
+Factory::Factory(int id, OWNER owner, int cyborgs, int production, int disabled) :
+        Entity(id, owner), cyborgs(cyborgs), production(production), availableTroops(cyborgs), disabled(disabled){
 }
 
 int Factory::getProduction() const {
@@ -32,11 +36,19 @@ void Factory::setOpTroops(const std::vector<Troop> &opTroops) {
     Factory::opTroops = opTroops;
 }
 
-void Factory::addTroop(Troop troop) {
+void Factory::addTroop(const Troop &troop) {
     if (OWNER::ME == troop.getOwner()) {
         myTroops.push_back(troop);
     } else {
         opTroops.push_back(troop);
+    }
+}
+
+void Factory::addBomb(const Bomb &bomb) {
+    if (OWNER::ME == bomb.getOwner()) {
+        myBombs.push_back(bomb);
+    } else {
+        opBombs.push_back(bomb);
     }
 }
 
@@ -49,15 +61,23 @@ std::string Factory::toString() {
 }
 
 int Factory::computeBattle(const int turn) const {
+    return Factory::computeBattle(turn, false);
+}
+int Factory::computeBattle(const int turn, bool isLookingForAvailableTroops) const {
     int battleResult = 0;
-
+    int bombCounter = disabled;
     battleResult = cyborgs;
 
     OWNER tmpOwner = owner;
     for (int i = 1; i <= turn; ++i) {
 
         if (tmpOwner != NEUTRAL) {
-            battleResult += production;
+            if (bombCounter == 0) {
+                battleResult += production;
+            }
+        }
+        if (bombCounter > 0) {
+            bombCounter -= 1;
         }
 
         int incomingTroopsAtThisTurn = 0;
@@ -94,6 +114,75 @@ int Factory::computeBattle(const int turn) const {
                 // Same owner
             }
         }
+
+        for (const Bomb &opBomb : opBombs) {
+            if (opBomb.getTurnsToArrive() == i) {
+
+                if (isLookingForAvailableTroops) {
+                    return cyborgs;
+                }
+
+                bombCounter = 5;
+                if (battleResult >= 0) {
+
+                    if (battleResult <= 10) {
+                        battleResult = 0;
+                    }
+                    else if (battleResult <= 20) {
+                        battleResult -= 10;
+                    }
+                    else {
+                        battleResult /= 2;
+                    }
+                }
+                else {
+                    if (battleResult >= -10) {
+                        battleResult = 0;
+                    }
+                    else if (battleResult >= -20) {
+                        battleResult += 10;
+                    }
+                    else {
+                        battleResult /= 2;
+                    }
+                }
+            }
+        }
+
+
+        for (const Bomb &myBomb : myBombs) {
+            if (myBomb.getTurnsToArrive() == i) {
+
+                if (isLookingForAvailableTroops) {
+                    return cyborgs;
+                }
+
+                bombCounter = 5;
+                if (battleResult >= 0) {
+
+                    if (battleResult <= 10) {
+                        battleResult = 0;
+                    }
+                    else if (battleResult <= 20) {
+                        battleResult -= 10;
+                    }
+                    else {
+                        battleResult /= 2;
+                    }
+                }
+                else {
+                    if (battleResult >= -10) {
+                        battleResult = 0;
+                    }
+                    else if (battleResult >= -20) {
+                        battleResult += 10;
+                    }
+                    else {
+                        battleResult /= 2;
+                    }
+                }
+            }
+        }
     }
 
     // This is to be sure to not let the opponent keep the factory with 0 troop
@@ -118,20 +207,25 @@ std::vector<Action> Factory::computePossibleActions(const std::vector<Factory> &
 
     std::vector<Action> possibleActions;
 
-    // Count not needed troops for the next 5 turns. (5 is arbitrary)
-    int availableTroops = countAvailableTroops(5);
 
-    if (availableTroops > 0) {
+    for (const Factory &destinationFactory : factories) {
 
-        for (const Factory &destinationFactory : factories) {
+        if (availableTroops > 0) {
 
-            // Generate action with score
-            const Action action = generateActionAndComputeScore(destinationFactory, availableTroops);
+            // Generate move action with score
+            const Action moveAction = generateMoveAction(destinationFactory, availableTroops);
 
             // Avoid bad moves
-            if (action.getScore() >= 0 && action.isValid()) {
-                possibleActions.emplace_back(action);
+            if (moveAction.getScore() > 0 && moveAction.isValid()) {
+                possibleActions.emplace_back(moveAction);
             }
+        }
+
+        // Generate bomb action with score
+        const Action bombAction = generateBombAction(destinationFactory);
+
+        if (bombAction.getScore() > 0) {
+            possibleActions.emplace_back(bombAction);
         }
     }
 
@@ -143,15 +237,19 @@ std::vector<Action> Factory::computePossibleActions(const std::vector<Factory> &
  * Need rework
  * TODO : implement pow
  */
-Action Factory::generateActionAndComputeScore(const Factory &destinationFactory, int availableTroops) const {
+Action Factory::generateMoveAction(const Factory &destinationFactory, int availableTroops) const {
 
     int turnsToGetToDestination = globals::factoryDirectDistances[id][destinationFactory.getId()] + 1;
 
-    int neededTroops = (-1) * destinationFactory.computeBattle(turnsToGetToDestination);
+    int neededTroops = computeNeededTroops(destinationFactory, turnsToGetToDestination);
 
-    float score = Evaluation::computeScore(destinationFactory, turnsToGetToDestination, neededTroops);
+    double score = Evaluation::computeScore(destinationFactory, turnsToGetToDestination, neededTroops);
 
-    int troopsToSend = Evaluation::computeTroopsToSend(neededTroops, availableTroops, ACTION_TYPE::MOVE);
+    Writer::debug("[Factory " + std::to_string(id)
+                  + "] Needed troops for Factory " + std::to_string(destinationFactory.getId())
+                  + " : " + std::to_string(neededTroops) + " with score : " + std::to_string(score));
+
+    int troopsToSend = Evaluation::computeTroopsToSend(neededTroops, availableTroops, ACTION_TYPE::MOVE, destinationFactory.getOwner());
 
     return Action(score, ACTION_TYPE::MOVE, id, destinationFactory.getId(), troopsToSend);
 }
@@ -161,14 +259,99 @@ int Factory::countAvailableTroops(int turns) const {
     int availableTroopsForAttack = cyborgs;
 
     for (int i = 1; i <= turns; ++i) {
-        int tmpAvailableTroopsForAttack = computeBattle(i);
+        int tmpAvailableTroopsForAttack = computeBattle(i, true);
 
         if (tmpAvailableTroopsForAttack < availableTroopsForAttack) {
             availableTroopsForAttack = tmpAvailableTroopsForAttack;
         }
     }
 
-    Writer::debug("[Factory " + std::to_string(id) + "]  Available troops for attack : " + std::to_string(availableTroopsForAttack));
+    Writer::debug("[Factory " + std::to_string(id) + "] Available troops : " + std::to_string(availableTroopsForAttack));
 
     return availableTroopsForAttack;
+}
+
+void Factory::setProduction(int production) {
+    Factory::production = production;
+}
+
+void Factory::setCyborgs(int cyborgs) {
+    Factory::cyborgs = cyborgs;
+}
+
+void Factory::setAvailableTroops(int availableTroops) {
+    Factory::availableTroops = availableTroops;
+}
+
+int Factory::getAvailableTroops() const {
+    return availableTroops;
+}
+
+int Factory::predictNeededTroops(int turnA, int turnB, const Factory &factory) const {
+    int neededTroops = 0;
+
+    if (id != factory.getId()) {
+
+        for (int i = turnA; i <= turnB; ++i) {
+            int tmpNeededTroops = (-1) * factory.computeBattle(i);
+
+            if (tmpNeededTroops > neededTroops) {
+                neededTroops = tmpNeededTroops;
+            }
+        }
+
+        //Writer::debug("[Factory " + std::to_string(id) + "] Friendly factory : " + std::to_string(factory.id) + " is needing " + std::to_string(neededTroops) + " troops");
+    }
+
+    return neededTroops;
+}
+
+Action Factory::generateBombAction(const Factory &destinationFactory) const {
+
+    double score;
+    int turnsToGetThere = globals::factoryDirectDistances[id][destinationFactory.getId()] + 1;
+
+    if (destinationFactory.getOwner() == OPPONENT
+        && destinationFactory.getMyBombs().empty()
+        && destinationFactory.computeBattle(turnsToGetThere)) {
+
+        score = 1.0 * std::pow(destinationFactory.getProduction(), 3)/turnsToGetThere;
+    }
+    else {
+        score = 0;
+    }
+
+    return Action(score, BOMB, id, destinationFactory.getId(), 0);
+}
+
+const std::vector<Bomb> &Factory::getMyBombs() const {
+    return myBombs;
+}
+
+std::vector<Bomb> & Factory::getOpBombs() {
+    return opBombs;
+}
+
+void Factory::setDisabled(int disabled) {
+    Factory::disabled = disabled;
+}
+
+int Factory::getDisabled() const {
+    return disabled;
+}
+
+int Factory::computeNeededTroops(const Factory &destinationFactory, const int turnsToGetToDestination) const {
+    int neededTroops = 0;
+
+    if (destinationFactory.getOwner() == ME) {
+        neededTroops = predictNeededTroops(turnsToGetToDestination, turnsToGetToDestination + 5, destinationFactory);
+    }
+    else if (destinationFactory.getOwner() == NEUTRAL ){
+        neededTroops = (-1) * destinationFactory.computeBattle(turnsToGetToDestination);
+    }
+    else {
+        neededTroops = (-1) * destinationFactory.computeBattle(turnsToGetToDestination);
+    }
+
+    return neededTroops;
 }

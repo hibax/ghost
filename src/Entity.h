@@ -1,7 +1,9 @@
 #pragma once
 
 #include <string>
-#include "Globals.h"
+
+enum OWNER {ME, OPPONENT, NEUTRAL};
+extern OWNER argToOwner(int arg);
 
 class Entity {
 public:
@@ -18,4 +20,5 @@ protected:
     int id;
     OWNER owner;
 };
+
 

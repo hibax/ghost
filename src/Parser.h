@@ -11,6 +11,6 @@ public:
 
 private:
     Parser() = default;
-    static void fillFactories(std::vector<Factory> &factories, const std::string &entityType, int arg1, int arg4, int arg5,
-                              int &entityId, int &arg2, int &arg3);
+    static void fillFactories(std::vector<Factory> &factories, int entityId, const std::string &entityType, int arg1, int arg2, int arg3,
+                              int arg4, int arg5);
 };

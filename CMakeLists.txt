@@ -15,7 +15,7 @@ set(SOURCE_FILES
         src/Entity.cpp src/Entity.h
         src/Parser.cpp src/Parser.h
         src/GameState.cpp src/GameState.h
-        src/Globals.cpp src/Globals.h src/Writer.cpp src/Writer.h src/Action.cpp src/Action.h src/Utils.cpp src/Utils.h src/PathResolver.cpp src/PathResolver.h src/Evaluation.cpp src/Evaluation.h)
+        src/Globals.cpp src/Globals.h src/Writer.cpp src/Writer.h src/Action.cpp src/Action.h src/Utils.cpp src/Utils.h src/Evaluation.cpp src/Evaluation.h src/Bomb.cpp src/Bomb.h)
 
 add_library(
         ghostinthecell

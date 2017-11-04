@@ -185,6 +185,7 @@ TEST(Factory, underAttackDontSendTroops) {
 
     // Init Factories
     Factory myFactory(0, OWNER::ME, 3, 3);
+
     std::vector<Factory> factories;
     factories.emplace_back(myFactory);
     factories.emplace_back(Factory(1, OWNER::OPPONENT, 2, 2));
@@ -194,7 +195,126 @@ TEST(Factory, underAttackDontSendTroops) {
     myFactory.addTroop(Troop(6, OWNER::OPPONENT, 4, 0, 6, 1));
 
 
+    // TODO : do something for "availableTroops"
+    int availableTroops = myFactory.countAvailableTroops(5);
+    myFactory.setAvailableTroops(availableTroops);
     std::vector<Action> actualActions = myFactory.computePossibleActions(factories);
 
-    EXPECT_EQ(0, actualActions.size());
+    bool isAttacking = false;
+    for (const Action &action : actualActions) {
+        if (action.getActionType() == MOVE) {
+            isAttacking = true;
+        }
+    }
+
+    EXPECT_FALSE(isAttacking);
+}
+
+
+TEST(Factory, shouldPredictThatFactoryWillNeedHelp) {
+
+    // Init distances
+    std::vector <std::tuple <int, int, int> > factoryDirectDistances;
+    factoryDirectDistances.emplace_back(0, 1, 1);
+    factoryDirectDistances.emplace_back(0, 2, 8);
+    Parser::initGameIDE(1, 1, factoryDirectDistances);
+
+    // Init Factories
+    Factory myFactory(0, OWNER::ME, 3, 3);
+    Factory friendFactory(1, OWNER::ME, 2, 1);
+
+    // Init troops
+    friendFactory.addTroop(Troop(6, OWNER::OPPONENT, 2, 1, 12, 4));
+
+    std::vector<Factory> factories;
+    factories.emplace_back(myFactory);
+    factories.emplace_back(friendFactory);
+    factories.emplace_back(Factory(2, OWNER::NEUTRAL, 2, 1));
+
+
+    std::vector<Action> actualActions = myFactory.computePossibleActions(factories);
+    Utils::sortActions(actualActions);
+
+    EXPECT_EQ(1, actualActions.at(0).getDestinationId());
+}
+
+
+TEST(Factory, shouldDefendFactoryThatIsReceivingBomb) {
+
+    // Init distances
+    std::vector <std::tuple <int, int, int> > factoryDirectDistances;
+    factoryDirectDistances.emplace_back(0, 1, 3);
+    factoryDirectDistances.emplace_back(0, 2, 3);
+    factoryDirectDistances.emplace_back(1, 2, 3);
+    Parser::initGameIDE(1, 1, factoryDirectDistances);
+
+    // Init Factories
+    Factory myFactory(0, OWNER::ME, 10, 3);
+    Factory friendFactory(1, OWNER::ME, 0, 2);
+
+    // Init troops
+    friendFactory.addBomb(Bomb(5, OWNER::OPPONENT, 2, 1, 5));
+    friendFactory.addTroop(Troop(6, OWNER::OPPONENT, 2, 1, 1, 6));
+
+    std::vector<Factory> factories;
+    factories.emplace_back(myFactory);
+    factories.emplace_back(friendFactory);
+    factories.emplace_back(Factory(2, OWNER::NEUTRAL, 9, 3));
+
+
+    std::vector<Action> actualActions = myFactory.computePossibleActions(factories);
+    Utils::sortActions(actualActions);
+
+    EXPECT_EQ(1, actualActions.at(0).getDestinationId());
+}
+
+// In particular there was an issue with the availableTroop computation
+TEST(Factory, ShouldEmptyFactoryBeforeBomb) {
+
+    // Init distances
+    std::vector <std::tuple <int, int, int> > factoryDirectDistances;
+    factoryDirectDistances.emplace_back(1, 3, 2);
+    factoryDirectDistances.emplace_back(1, 4, 7);
+    factoryDirectDistances.emplace_back(3, 4, 3);
+    Parser::initGameIDE(3, 3, factoryDirectDistances);
+
+    // Init Factories
+    Factory myFactory(1, OWNER::ME, 2, 2);
+    Factory friendFactory(3, OWNER::ME, 7, 3);
+    Factory enemyFactory(4, OWNER::OPPONENT, 7, 3);
+
+    // Init troops
+    friendFactory.addBomb(Bomb(5, OWNER::OPPONENT, 4, 3, 1));
+    friendFactory.addTroop(Troop(6, OWNER::OPPONENT, 4, 3, 3, 2));
+    friendFactory.addTroop(Troop(6, OWNER::ME, 1, 3, 2, 2));
+    enemyFactory.addBomb(Bomb(7, OWNER::ME, 1, 4, 4));
+
+    myFactory.addBomb(Bomb(5, OWNER::OPPONENT, 4, 1, 4));
+
+    std::vector<Factory> factories;
+    factories.emplace_back(myFactory);
+    factories.emplace_back(friendFactory);
+    factories.emplace_back(enemyFactory);
+
+    int actualAvailableTroops1 = myFactory.countAvailableTroops(5);
+    int actualAvailableTroops3 = friendFactory.countAvailableTroops(5);
+
+    EXPECT_EQ(2, actualAvailableTroops1);
+    EXPECT_EQ(7, actualAvailableTroops3);
+
+    std::vector<Action> actualActions = myFactory.computePossibleActions(factories);
+    Utils::sortActions(actualActions);
+
+    EXPECT_EQ(3, actualActions.at(0).getDestinationId());
+}
+
+TEST(Factory, shouldTakeBackFactoryThatReceivedBomb) {
+
+    // TODO
+}
+
+
+TEST(Factory, shouldAttackFactoryThatIsReceivingBomb) {
+
+    // TODO
 }

@@ -7,7 +7,7 @@ class Writer {
 public:
 
     static void debug(std::string log);
-    static std::string actionsOutput(const std::vector<Action> &actions);
+    static std::string actionsOutput(const Action &action);
 
 private:
     Writer() = default;

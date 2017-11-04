@@ -20,3 +20,15 @@ std::string Entity::toString() {
     ss << "Entity " << id << " " << owner;
     return ss.str();
 }
+
+
+OWNER argToOwner(int arg) {
+    switch (arg) {
+        case 1:
+            return ME;
+        case -1:
+            return OPPONENT;
+        default:
+            return NEUTRAL;
+    }
+}

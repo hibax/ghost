@@ -4,13 +4,13 @@
 #include <utility>
 #include <sstream>
 
-Action::Action(float score, ACTION_TYPE actionType, int from, int to, int cyborgCount, std::string message) :
+Action::Action(double score, ACTION_TYPE actionType, int from, int to, int cyborgCount, std::string message) :
         score(score), actionType(actionType), sourceId(from), destinationId(to), cyborgCount(cyborgCount), message(
         std::move(message)) {
 
 }
 
-Action::Action(float score, ACTION_TYPE actionType, int from, int to, int cyborgCount) :
+Action::Action(double score, ACTION_TYPE actionType, int from, int to, int cyborgCount) :
         Action(score, actionType, from, to, cyborgCount, ""){
 }
 
@@ -34,7 +34,7 @@ const std::string &Action::getMessage() const {
     return message;
 }
 
-float Action::getScore() const {
+double Action::getScore() const {
     return score;
 }
 
@@ -57,12 +57,31 @@ bool Action::isValid() const {
     return true;
 }
 
-std::string Action::toString() {
+std::string Action::toString() const {
     std::stringstream ss;
-    ss << "[Action]" << " type " << actionType
+    ss << "[Action] " << getActionTypeAsString()
        << " from " << sourceId << " to " << destinationId
        << " cyborgs " << cyborgCount << " score " << score;
     return ss.str();
+}
+
+void Action::setCyborgCount(int cyborgCount) {
+    Action::cyborgCount = cyborgCount;
+}
+
+std::string Action::getActionTypeAsString() const {
+    if (actionType == MOVE) {
+        return "MOVE";
+    }
+    else if ( actionType == BOMB) {
+        return "BOMB";
+    }
+    else if (actionType == INC) {
+        return "INC";
+    }
+    else {
+        return "WAIT";
+    }
 }
 
 

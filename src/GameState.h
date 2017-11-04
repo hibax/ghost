@@ -7,16 +7,17 @@ class GameState {
 
 public:
     GameState(int round, std::vector<Factory> &factories);
-    std::string computeActions() const;
-
-private:
-    const int round;
-public:
+    std::string computeActions();
     int getRound() const;
 
     const std::vector<Factory> &getFactories() const;
+    std::string computeOutput(std::vector<Action> &possibleActions, Factory &sourceFactory);
+
 
 private:
-    const std::vector<Factory> factories;
+    void performAction(Action &action);
+    std::string adaptOutput(std::string &output) const;
 
+    const int round;
+    std::vector<Factory> factories;
 };

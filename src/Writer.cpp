@@ -6,23 +6,22 @@ void Writer::debug(std::string log) {
     std::cerr << log << std::endl;
 }
 
-std::string Writer::actionsOutput(const std::vector<Action> &actions) {
+std::string Writer::actionsOutput(const Action &action) {
     std::string output;
 
-    if (actions.empty()) {
-        return "WAIT";
-    }
-
-    const Action &action = actions.at(0);
     switch(action.getActionType()) {
         case ACTION_TYPE::MOVE:
             output += "MOVE " +
                     std::to_string(action.getSourceId()) + " " +
                     std::to_string(action.getDestinationId()) + " " +
-                    std::to_string(action.getCyborgCount());
+                    std::to_string(action.getCyborgCount()) + ";";
             break;
+        case ACTION_TYPE::BOMB:
+            output += "BOMB " +
+                    std::to_string(action.getSourceId()) + " " +
+                    std::to_string(action.getDestinationId()) + ";";
         default:
-            output += "WAIT";
+            output += "WAIT;";
             break;
     }
 

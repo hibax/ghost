@@ -55,4 +55,30 @@ TEST(ComputeActions, globalTest) {
 }
  */
 
+TEST(GameState, StopWhenNoMoreTroops) {
+
+    // Init GameState
+    std::vector<Factory> factories;
+    factories.emplace_back(0, OWNER::ME, 5, 3);
+    factories.emplace_back(1, OWNER::OPPONENT, 3, 3);
+    GameState gameState(1, factories);
+
+    // Init Actions
+    std::vector<Action> possibleActions;
+    possibleActions.emplace_back(Action(10, ACTION_TYPE::MOVE, 0, 1, 2));
+    possibleActions.emplace_back(Action(10, ACTION_TYPE::MOVE, 0, 1, 2));
+    possibleActions.emplace_back(Action(10, ACTION_TYPE::MOVE, 0, 1, 2));
+    possibleActions.emplace_back(Action(10, ACTION_TYPE::MOVE, 0, 1, 2));
+    possibleActions.emplace_back(Action(10, ACTION_TYPE::MOVE, 0, 1, 2));
+    possibleActions.emplace_back(Action(10, ACTION_TYPE::MOVE, 0, 1, 2));
+
+    Factory &test = factories.at(0);
+
+    std::string actualOutput = gameState.computeOutput(possibleActions, test);
+    std::string expectedOutput = "MOVE 0 1 2;MOVE 0 1 2;MOVE 0 1 1;";
+
+    EXPECT_EQ(expectedOutput, actualOutput);
+
+}
+
 

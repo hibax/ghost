@@ -8,8 +8,9 @@
 class Evaluation {
 
 public:
-    static float computeScore(const Factory &destinationFactory, int turnsToArrive, int neededTroops);
-    static int computeTroopsToSend(int neededTroops, int availableTroops, ACTION_TYPE actionType);
+    static double computeScore(const Factory &destinationFactory, int turnsToArrive, int neededTroops);
+    static int
+    computeTroopsToSend(int neededTroops, int availableTroops, ACTION_TYPE actionType, OWNER destinationOwner);
 
 private:
     Evaluation() = default;
