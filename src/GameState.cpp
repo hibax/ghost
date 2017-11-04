@@ -32,7 +32,7 @@ std::string GameState::computeActions() {
             sourceFactory.setAvailableTroops(availableTroops);
 
             // Check all possible actions
-            std::vector<Action> possibleActions = sourceFactory.computePossibleActions(factories);
+            std::vector<Action> possibleActions = sourceFactory.computePossibleActions(factories, round);
             Utils::sortActions(possibleActions);
 
             // Perform best actions

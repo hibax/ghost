@@ -108,7 +108,7 @@ TEST(Factory, shouldChooseClosestNeutralFactory) {
     factories.emplace_back(Factory(2, OWNER::NEUTRAL, 5, 3));
 
 
-    std::vector<Action> actualActions = myFactory.computePossibleActions(factories);
+    std::vector<Action> actualActions = myFactory.computePossibleActions(factories, 0);
     Utils::sortActions(actualActions);
 
     EXPECT_EQ(1, actualActions.at(0).getDestinationId());
@@ -123,7 +123,7 @@ TEST(Factory, shouldNotMoveOnItself) {
     factories.emplace_back(myFactory);
 
 
-    std::vector<Action> actualActions = myFactory.computePossibleActions(factories);
+    std::vector<Action> actualActions = myFactory.computePossibleActions(factories, 0);
 
     EXPECT_EQ(0, actualActions.size());
 }
@@ -146,7 +146,7 @@ TEST(Factory, shouldChooseWeakestFactory) {
     factories.emplace_back(Factory(2, OWNER::OPPONENT, 1, 0));
 
 
-    std::vector<Action> actualActions = myFactory.computePossibleActions(factories);
+    std::vector<Action> actualActions = myFactory.computePossibleActions(factories, 0);
     Utils::sortActions(actualActions);
 
     EXPECT_EQ(2, actualActions.at(0).getDestinationId());
@@ -168,7 +168,7 @@ TEST(Factory, shouldChooseClosestOpponentFactory) {
     factories.emplace_back(Factory(2, OWNER::OPPONENT, 5, 0));
 
 
-    std::vector<Action> actualActions = myFactory.computePossibleActions(factories);
+    std::vector<Action> actualActions = myFactory.computePossibleActions(factories, 0);
     Utils::sortActions(actualActions);
 
     EXPECT_EQ(2, actualActions.at(0).getDestinationId());
@@ -198,7 +198,7 @@ TEST(Factory, underAttackDontSendTroops) {
     // TODO : do something for "availableTroops"
     int availableTroops = myFactory.countAvailableTroops(5);
     myFactory.setAvailableTroops(availableTroops);
-    std::vector<Action> actualActions = myFactory.computePossibleActions(factories);
+    std::vector<Action> actualActions = myFactory.computePossibleActions(factories, 0);
 
     bool isAttacking = false;
     for (const Action &action : actualActions) {
@@ -232,7 +232,7 @@ TEST(Factory, shouldPredictThatFactoryWillNeedHelp) {
     factories.emplace_back(Factory(2, OWNER::NEUTRAL, 2, 1));
 
 
-    std::vector<Action> actualActions = myFactory.computePossibleActions(factories);
+    std::vector<Action> actualActions = myFactory.computePossibleActions(factories, 0);
     Utils::sortActions(actualActions);
 
     EXPECT_EQ(1, actualActions.at(0).getDestinationId());
@@ -262,7 +262,7 @@ TEST(Factory, shouldDefendFactoryThatIsReceivingBomb) {
     factories.emplace_back(Factory(2, OWNER::NEUTRAL, 9, 3));
 
 
-    std::vector<Action> actualActions = myFactory.computePossibleActions(factories);
+    std::vector<Action> actualActions = myFactory.computePossibleActions(factories, 0);
     Utils::sortActions(actualActions);
 
     EXPECT_EQ(1, actualActions.at(0).getDestinationId());
@@ -302,7 +302,7 @@ TEST(Factory, ShouldEmptyFactoryBeforeBomb) {
     EXPECT_EQ(2, actualAvailableTroops1);
     EXPECT_EQ(7, actualAvailableTroops3);
 
-    std::vector<Action> actualActions = myFactory.computePossibleActions(factories);
+    std::vector<Action> actualActions = myFactory.computePossibleActions(factories, 0);
     Utils::sortActions(actualActions);
 
     EXPECT_EQ(3, actualActions.at(0).getDestinationId());

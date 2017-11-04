@@ -15,6 +15,7 @@ int main()
 
     // game loop
     while (1) {
+        Writer::debug("Round : " + std::to_string(round));
         GameState gameState = Parser::initRound(round);
 
         std::string output = gameState.computeActions();

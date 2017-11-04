@@ -203,7 +203,7 @@ int Factory::fightCoef(OWNER factoryOwner, OWNER troopOwner) const {
     return -1;
 }
 
-std::vector<Action> Factory::computePossibleActions(const std::vector<Factory> &factories) const {
+std::vector<Action> Factory::computePossibleActions(const std::vector<Factory> &factories, const int round) const {
 
     std::vector<Action> possibleActions;
 
@@ -213,7 +213,7 @@ std::vector<Action> Factory::computePossibleActions(const std::vector<Factory> &
         if (availableTroops > 0) {
 
             // Generate move action with score
-            const Action moveAction = generateMoveAction(destinationFactory, availableTroops);
+            const Action moveAction = generateMoveAction(destinationFactory, availableTroops, round);
 
             // Avoid bad moves
             if (moveAction.getScore() > 0 && moveAction.isValid()) {
@@ -237,7 +237,7 @@ std::vector<Action> Factory::computePossibleActions(const std::vector<Factory> &
  * Need rework
  * TODO : implement pow
  */
-Action Factory::generateMoveAction(const Factory &destinationFactory, int availableTroops) const {
+Action Factory::generateMoveAction(const Factory &destinationFactory, int availableTroops, const int round) const {
 
     int turnsToGetToDestination = globals::factoryDirectDistances[id][destinationFactory.getId()] + 1;
 
@@ -251,7 +251,15 @@ Action Factory::generateMoveAction(const Factory &destinationFactory, int availa
 
     int troopsToSend = Evaluation::computeTroopsToSend(neededTroops, availableTroops, ACTION_TYPE::MOVE, destinationFactory.getOwner());
 
-    return Action(score, ACTION_TYPE::MOVE, id, destinationFactory.getId(), troopsToSend);
+    int destinationId;
+    if (round == 0) {
+        destinationId = destinationFactory.getId();
+    }
+    else {
+        destinationId = globals::shortestPath[id][destinationFactory.getId()];
+    }
+
+    return Action(score, ACTION_TYPE::MOVE, id, destinationId, troopsToSend);
 }
 
 // count how many troops are available (= not needed for defense) for the next X turns (taking into account the production)

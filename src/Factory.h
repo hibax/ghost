@@ -31,7 +31,7 @@ public:
 
     int computeBattle(int turn) const;
     int computeBattle(int turn, bool isLookingForAvailableTroops) const;
-    std::vector<Action> computePossibleActions(const std::vector<Factory> &factories) const;
+    std::vector<Action> computePossibleActions(const std::vector<Factory> &factories, const int round) const;
     int countAvailableTroops(int turns) const;
     int predictNeededTroops(int turnA, int turnB, const Factory &factory) const;
 
@@ -48,7 +48,7 @@ private:
     std::vector<Bomb> opBombs;
 
     int fightCoef(OWNER factoryOwner, OWNER troopOwner) const;
-    Action generateMoveAction(const Factory &destinationFactory, int availableTroops) const;
+    Action generateMoveAction(const Factory &destinationFactory, int availableTroops, const int round) const;
     Action generateBombAction(const Factory &destinationFactory) const;
     int computeNeededTroops(const Factory &destinationFactory, const int turnsToGetToDestination) const;
 };

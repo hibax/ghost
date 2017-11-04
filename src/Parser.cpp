@@ -5,6 +5,7 @@
 #include "Writer.h"
 #include "Utils.h"
 #include "Globals.h"
+#include "graph.h"
 
 void Parser::initGame() {
     int factoryCount; // the number of factories
@@ -30,6 +31,13 @@ void Parser::initGame() {
         Writer::debug(ss.str());
 
     }
+
+    Graph::computeShortestPathWithMaxNbVertices(globals::factoryDirectDistances,
+                                                globals::shortestPath,
+                                                globals::shortestDistance,
+                                                globals::linkCount,
+                                                globals::factoryCount);
+
 }
 
 void Parser::initGameIDE(int factoryCount, int linkCount, std::vector <std::tuple <int, int, int> > &factoryDirectDistances) {
@@ -45,6 +53,11 @@ void Parser::initGameIDE(int factoryCount, int linkCount, std::vector <std::tupl
         globals::factoryDirectDistances[factory2][factory1] = distance;
     }
 
+    Graph::computeShortestPathWithMaxNbVertices(globals::factoryDirectDistances,
+                                                globals::shortestPath,
+                                                globals::shortestDistance,
+                                                globals::linkCount,
+                                                globals::factoryCount);
 }
 
 GameState Parser::initRound(int round) {
