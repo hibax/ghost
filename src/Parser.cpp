@@ -3,6 +3,7 @@
 #include <sstream>
 #include "Parser.h"
 #include "Writer.h"
+#include <tuple>
 
 void Parser::initGame() {
     int factoryCount; // the number of factories
