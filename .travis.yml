@@ -17,13 +17,12 @@ addons:
       - g++-4.9
       - clang-3.7
 
-os:
-  - osx
 
 language: cpp
 
 compiler:
   - clang
+  - gcc
 
 script:
   - mkdir build
