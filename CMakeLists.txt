@@ -15,7 +15,7 @@ set(SOURCE_FILES
         src/Entity.cpp src/Entity.h
         src/Parser.cpp src/Parser.h
         src/GameState.cpp src/GameState.h
-        src/Globals.cpp src/Globals.h src/Writer.cpp src/Writer.h src/Action.cpp src/Action.h src/Utils.cpp src/Utils.h src/Evaluation.cpp src/Evaluation.h src/Bomb.cpp src/Bomb.h)
+        src/Globals.cpp src/Globals.h src/Writer.cpp src/Writer.h src/Action.cpp src/Action.h src/Utils.cpp src/Utils.h src/Evaluation.cpp src/Evaluation.h src/graph.h src/graph.cpp src/Bomb.cpp src/Bomb.h)
 
 add_library(
         ghostinthecell
@@ -23,7 +23,7 @@ add_library(
 
 add_executable(
         unit_tests
-        test/FactoryTest.cpp test/ParserTest.cpp test/GameStateTest.cpp test/UtilsTest.cpp test/main.cpp test/WriterTest.cpp)
+        test/FactoryTest.cpp test/ParserTest.cpp test/GameStateTest.cpp test/UtilsTest.cpp test/main.cpp test/WriterTest.cpp test/GraphTest.cpp)
 
 target_link_libraries(
         unit_tests
