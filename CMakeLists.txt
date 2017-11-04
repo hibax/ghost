@@ -1,7 +1,7 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.0)
 project(ghostinthecell)
 
-set(CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")
 
 add_subdirectory(external/googletest)
 
